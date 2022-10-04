@@ -12,7 +12,7 @@ title: Comparisons with Other Test Runners | Guide
 
 [Cypress](https://www.cypress.io/) is a browser-based test runner and a complementary tool to Vitest. If you'd like to use Cypress, we suggest using Vitest for all headless logic in your application and Cypress for all browser-based logic.
 
-Cypress is known as an end-to-end testing tool, however their [new component test runner](https://on.cypress.io/component) has great support for testing Vite components and is an ideal choice to test anything that renders in a browser.
+Cypress is known as an end-to-end testing tool, however their [new component test runner](https://on.cypress.io/component) has great support for testing Vite components and is an good choice to test anything that renders in a browser.
 
 Browser-based runners, like Cypress and Web Test Runner, will catch issues that Vitest cannot because they use the real browser and real browser APIs.
 
@@ -26,9 +26,20 @@ Cypress has also been [integrating Vite in their products](https://www.youtube.c
 
 We believe that Cypress isn't a good option for unit testing headless code, but that using Cypress (for E2E and Component Testing) and Vitest (for unit tests) would cover your app's testing needs.
 
+## Playwright
+
+[Playwright](https://playwright.dev) is a fairly new testing and automation framework from Microsoft, developed by the same team that created Puppeteer. It supports various programming languages and testing types such as [end-to-end](https://playwright.dev/docs/writing-tests#the-example-test), [API](https://playwright.dev/docs/test-api-testing), [UI component](https://playwright.dev/docs/test-components) and unit tests all within a single tool and a single API.
+
+Playwright has a headless _(without browser UI)_ and headed _(with browser UI)_ mode for all browsers and all platforms, including mobile. It executes tests partly in the browser and partly in the programming language runtime, making it fast and the ideal choice for testing anything displayed in a browser and a good choice for testing headless logic.
+
+Compared to Cypress, Playwright has similar features and has integrated Vite into their products as well. However, Playwright is faster and supports features that are not supported in Cypress such as [vscode integration](https://github.com/microsoft/playwright-vscode#run-tests-with-a-single-click), parallel tests in a single file, multiple domains, pages and frames, fixtures _(and many more)_.
+
+Playwright has a similar API to Vitest and has performs well too. However, it's not as fast as Vitest and it doesn't have HMR and [watch mode yet](https://playwright.dev/docs/test-components#planned-work). Unlike Playwright, pure Node-based runners like Vitest and Jest support partially-implemented browser environments, making Vitest and Jest more suitable for applications that only need headless testing.
+
 ## Web Test Runner
 
 [@web/test-runner](https://modern-web.dev/docs/test-runner/overview/) runs tests inside a headless browser, providing the same execution environment as your web application without the need for mocking out browser APIs or the DOM. This also makes it possible to debug inside a real browser using the devtools, although there is no UI shown for stepping through the test, as there is in Cypress tests. There is a watch mode, but it is not as intelligent as that of vitest, and may not always re-run the tests you want. To use @web/test-runner with a vite project, there is a [plugin](https://github.com/material-svelte/vite-web-test-runner-plugin), although certain features such as changing the viewport size in a test are [not currently working](https://github.com/material-svelte/vite-web-test-runner-plugin/issues/11). @web/test-runner does not include assertion or mocking libraries, so it is up to you to add them.
 
 ## uvu
+
 [uvu](https://github.com/lukeed/uvu) is a test runner for Node.js and the browser. It runs tests in a single thread, so tests are not isolated and can leak across files. Vitest, however, uses worker threads to isolate tests and run them in parallel. For transforming your code, uvu relies on require and loader hooks. Vitest uses [Vite](https://vitejs.dev), so files are transformed with the full power of Vite's plugin system. In a world where we have Vite providing support for the most common web tooling (typescript, JSX, most popular UI Frameworks), uvu represents a duplication of complexity. If your app is powered by Vite, having two different pipelines to configure and maintain is not justifiable. With Vitest you get to define the configuration for your dev, build and test environments as a single pipeline, sharing the same plugins and the same vite.config.js. uvu does not provide an intelligent watch mode to rerun the changed tests, but Vitest gives you amazing DX thanks to the default watch mode using Vite instant Hot Module Reload (HMR). uvu is a fast option for running simple tests, but Vitest can be faster and more reliable for more complex tests and projects.
